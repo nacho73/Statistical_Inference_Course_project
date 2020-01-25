@@ -1,0 +1,104 @@
+---
+title: "Statistical Inference - Course Project Part 1"
+author: "José Ignacio Gavara"
+date: "23/1/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Overview
+The purpose of this data analysis is to investigate the exponential distribution
+and compare it to the Central Limit Theorem. 
+
+To achieve our goal, we will follow the following steps:
+1. We will show the sample mean and compare it to the theoretical mean of the distribution.
+2. We will show how variable the sample is (via variance) and compare it to the theoretical variance of the distribution.
+3. We will show that the distribution is approximately normal.
+
+For this analysis, the lambda will 
+be set to 0.2 for all of the simulations. This investigation will compare the 
+distribution of averages of 40 exponentials over 1000 simulations.
+
+
+## Simulations
+First, we will set the simulation variables lambda, exponentials, and seed.
+```{r}
+ECHO=TRUE
+set.seed(125)
+lambda = 0.2
+exponentials = 40
+```
+
+Run Simulations with variables
+```{r}
+simMeans = NULL
+for (i in 1 : 1000) simMeans = c(simMeans, mean(rexp(exponentials, lambda)))
+```
+
+
+## Sample Mean vs Theoretical Mean
+#### Sample Mean
+Calculating the mean from the simulations with give the sample mean.
+```{r}
+mean(simMeans)
+```
+
+#### Theoretical Mean
+The theoretical mean of an exponential distribution is:
+lambda^-1.
+```{r}
+lambda^-1
+```
+
+#### Comparison (sample mean - theoretical mean).
+We can see that the simulations sample mean and the 
+exponential distribution theoretical mean are very similar.The difference between them is:
+```{r}
+abs(mean(simMeans)-lambda^-1)
+```
+A 
+```{r}
+abs((((mean(simMeans)-(lambda^-1))/(mean(simMeans)))*100))
+```
+%
+
+## Sample Variance versus Theoretical Variance
+#### Sample Variance
+Calculating the variance from the simulation means with give the sample
+variance.
+```{r}
+var(simMeans)
+```
+
+#### Theoretical Variance
+The theoretical variance of an exponential distribution is: 
+(lambda * sqrt(n))^-2.
+```{r}
+(lambda * sqrt(exponentials))^-2
+```
+
+#### Comparison
+We can see that the simulations sample variance and 
+the exponential distribution theoretical variance are also very similar.The difference between variances is only of:
+```{r}
+abs(var(simMeans)-(lambda * sqrt(exponentials))^-2)
+```
+A 
+```{r}
+abs((((var(simMeans)-(lambda * sqrt(exponentials))^-2))/(var(simMeans)))*100)
+```
+%
+## Distribution
+This is a density histogram of the 1000 simulations.As we can see, the distribution of means of our sampled exponential distributions is very close to a normal distribution, due to the Central Limit Theorem. If we increased our number of samples the distribution would be even closer to the standard normal distribution.
+```{r}
+library(ggplot2)
+ggplot(data.frame(y=simMeans), aes(x=y)) + 
+  geom_histogram(aes(y=..density..), binwidth=0.2, fill="#000fb2", 
+                 color="black") +
+  stat_function(fun=dnorm, arg=list(mean=lambda^-1, 
+                                    sd=(lambda*sqrt(exponentials))^-1), 
+                size=2) +
+  labs(title="Simulations distribution vs Normal distribution", x="Simulation Mean")
+```
