@@ -50,6 +50,7 @@ The theoretical mean of an exponential distribution is:
 lambda^-1.
 ```{r}
 lambda^-1
+theoretical.mean<-lambda^-1
 ```
 
 #### Comparison (sample mean - theoretical mean).
@@ -58,11 +59,10 @@ exponential distribution theoretical mean are very similar.The difference betwee
 ```{r}
 abs(mean(simMeans)-lambda^-1)
 ```
-A 
+In percentage (%): 
 ```{r}
 abs((((mean(simMeans)-(lambda^-1))/(mean(simMeans)))*100))
 ```
-%
 
 ## Sample Variance versus Theoretical Variance
 #### Sample Variance
@@ -85,20 +85,25 @@ the exponential distribution theoretical variance are also very similar.The diff
 ```{r}
 abs(var(simMeans)-(lambda * sqrt(exponentials))^-2)
 ```
-A 
+In percentage (%): 
 ```{r}
 abs((((var(simMeans)-(lambda * sqrt(exponentials))^-2))/(var(simMeans)))*100)
 ```
-%
-## Distribution
-This is a density histogram of the 1000 simulations.As we can see, the distribution of means of our sampled exponential distributions is very close to a normal distribution, due to the Central Limit Theorem. If we increased our number of samples the distribution would be even closer to the standard normal distribution.
+
+## Distribution 
+This is a density histogram of the 1000 simulations.The blue line represents the best fit curve of the sample means, while the red line represents the normal distribution curve. As we can see, the distribution of means of our sampled exponential distributions is very close to a normal distribution, due to the Central Limit Theorem.If we increased our number of samples the distribution would be even closer to the standard normal distribution.
 ```{r}
 library(ggplot2)
-ggplot(data.frame(y=simMeans), aes(x=y)) + 
-  geom_histogram(aes(y=..density..), binwidth=0.2, fill="#000fb2", 
+dist<-ggplot(data.frame(y=simMeans), aes(x=y)) + 
+  geom_histogram(aes(y=..density..), binwidth=0.2, fill="#0072B2", 
                  color="black") +
-  stat_function(fun=dnorm, arg=list(mean=lambda^-1, 
-                                    sd=(lambda*sqrt(exponentials))^-1), 
+  stat_function(fun = dnorm, color = "red", linetype = "dashed", size = 1, 
+                  args = list(mean = lambda^-1, sd=(lambda*sqrt(exponentials))^-1), 
                 size=2) +
-  labs(title="Simulations distribution vs Normal distribution", x="Simulation Mean")
+  geom_vline(xintercept=mean(simMeans), colour="blue", linetype="dashed") +   
+geom_vline(xintercept=theoretical.mean, colour="red", linetype="dashed") +
+  geom_density(alpha=.2, color = "blue") +
+  
+  labs(title="Simulations vs normal distribution", x="Simulation Mean")
+dist
 ```
