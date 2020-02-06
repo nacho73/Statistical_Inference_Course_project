@@ -2,7 +2,10 @@
 title: "Statistical Inference - Course Project Part 1"
 author: "José Ignacio Gavara"
 date: "23/1/2020"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
